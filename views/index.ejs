@@ -44,7 +44,7 @@
                   <td><%= api.version %></td>
                   <td><%= api.jsonString %></td>
                   <td><%= api._id %></td>
-                  <td><a href="/api/<%= api._id + '/' + api.version + '/' + api.name %>" target="_blank">URL</a></td>
+                  <td><a href="/api/<%= api._id + '/' + api.version + '/' + api.name.split(' ').join('_').toLowerCase() %>" target="_blank">URL</a></td>
                 </tr>
               <% }) %>
             </tbody>
