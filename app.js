@@ -5,23 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var db = require('mongoose');
-db.connect('mongodb://localhost:27017/test_db');
+var mongoose = require('mongoose');
 
-require('./db/models').initialize();
+// require('./db/models').initialize();
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-var User = db.model('users');
+/*
+var User = mongoose.model('users');
 
 passport.use(new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
@@ -42,30 +34,39 @@ passport.use(new LocalStrategy(function(username, password, done) {
     });
   });
 }));
+*/
 
 var routes = require('./routes/index');
 var apis = require('./routes/apis');
 
 var app = express();
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('express-session')({
+    secret: 'gaM6RNXvP4dC9Mf5Oy7H',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/api', apis);
+
+var User = require('./models/user');
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+mongoose.connect('mongodb://localhost:27017/mock_api_generator_db');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

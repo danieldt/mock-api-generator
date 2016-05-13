@@ -1,7 +1,6 @@
 var express = require('express');
+var API = require('../models/api');
 var router = express.Router();
-var db = require('mongoose');
-var API = db.model('apis');
 
 /* Helpers */
 var randomChoice = function(items) {
