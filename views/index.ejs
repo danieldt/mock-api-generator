@@ -17,5 +17,60 @@
       <p>You are currently logged in as <b><%= user.username %></b></p>
       <a href="/logout">Logout</a>
     <% } %>
+
+    <% if (user) { %>
+      <div class="row">
+        <div class="col-sm-8">
+          <h1>All your APIs in one place!</h1>
+          <p class="lead">Say something worthwhile here.</p><br/>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>API Name</th>
+                <th>Version</th>
+                <th>JSON Response</th>
+                <th>API ID</th>
+                <th>API URL</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% if (user.apis.length != 0) { %>
+              <% user.apis.forEach(function(api){ %>
+                <tr>
+                  <th scope="row">1</th>
+                  <td><%= api.name %></td>
+                  <td><%= api.version %></td>
+                  <td><%= api.jsonString %></td>
+                  <td><%= api._id %></td>
+                  <td><a href="/api/<%= api._id + '/' + api.version + '/' + api.name %>" target="_blank">URL</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+            <% } %>
+          </table>
+        </div>
+
+        <div class="col-sm-4">
+          <h1>Create your own API:</h1>
+          <p class="lead">Say something worthwhile here.</p><br/>
+
+          <form role="form" action="/api/save" method="post" style="max-width: 300px;">
+            <div class="form-group">
+              <input type="text" name="name" placeholder="Name" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <input type="text" name="version" placeholder="Version" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <input type="text" name="jsonString" placeholder="Custom Response" class="form-control"/>
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>&nbsp;<a href="/">
+            <button type="button" class="btn btn-primary">Cancel</button></a>
+          </form>
+        </div>
+      </div>
+    <% } %>
   </body>
 </html>
